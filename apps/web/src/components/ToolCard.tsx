@@ -53,7 +53,10 @@ export function ToolCard({
     }
   }
   const ctx: FileToolCtx = { projectFileNames, onRequestOpenFile };
-  if (name === 'TodoWrite') return <TodoCard input={use.input} />;
+  // Backward compatibility: historic chat messages in the database may
+  // contain lowercase 'todowrite' from old OpenCode CLI versions before
+  // we added daemon-side normalization. Normalize at render time too.
+  if (name === 'TodoWrite' || name === 'todowrite') return <TodoCard input={use.input} />;
   if (name === 'Write' || name === 'create_file')
     return <FileWriteCard input={use.input} result={result} ctx={ctx} />;
   if (name === 'Edit' || name === 'str_replace_edit')
