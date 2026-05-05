@@ -33,37 +33,6 @@ function formatOpenCodeUsage(tokens) {
   return Object.keys(usage).length > 0 ? usage : null;
 }
 
-// TEMPORARY ADAPTER LAYER
-// TODO: Standardize tool name contract across all CLIs.
-// Right now every agent CLI uses different tool names:
-//   - opencode: lowercase 'todowrite', 'write', 'edit'
-//   - claude: capitalized 'TodoWrite', 'Write', 'Edit'
-//   - codex: underscored 'create_file', 'str_replace_edit'
-// This map normalizes them to the UI's standard names.
-const OPENCODE_TOOL_NORMALIZATION: Record<string, string> = {
-  todowrite: 'TodoWrite',
-  searchreplace: 'SearchReplace',
-  write: 'Write',
-  create_file: 'Write',
-  edit: 'Edit',
-  str_replace_edit: 'Edit',
-  read: 'Read',
-  read_file: 'Read',
-  bash: 'Bash',
-  glob: 'Glob',
-  list_files: 'Glob',
-  grep: 'Grep',
-  webfetch: 'WebFetch',
-  web_fetch: 'WebFetch',
-  websearch: 'WebSearch',
-  web_search: 'WebSearch',
-};
-
-function normalizeToolName(name: string): string {
-  const lower = name.toLowerCase().replace(/_/g, '');
-  return OPENCODE_TOOL_NORMALIZATION[lower] ?? OPENCODE_TOOL_NORMALIZATION[name] ?? name;
-}
-
 function detectEmbeddedToolCall(text: string): { name: string; input: unknown } | null {
   const trimmed = text.trim();
   const todoMatch = trimmed.match(/^(todowrite|TodoWrite)\s*({[\s\S]*})/i);
@@ -94,7 +63,7 @@ function handleOpenCodeEvent(obj, onEvent, state) {
         onEvent({
           type: 'tool_use',
           id: key,
-          name: normalizeToolName(detected.name),
+          name: detected.name,
           input: detected.input,
         });
       }
@@ -112,7 +81,7 @@ function handleOpenCodeEvent(obj, onEvent, state) {
       onEvent({
         type: 'tool_use',
         id: part.callID,
-        name: normalizeToolName(part.tool),
+        name: part.tool,
         input: safeParseJson(statePart?.input) ?? statePart?.input ?? null,
       });
     }

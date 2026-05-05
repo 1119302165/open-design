@@ -55,6 +55,25 @@ test('opencode json stream emits tool events', () => {
   ]);
 });
 
+test('opencode stream extracts embedded todowrite from text events', () => {
+  const events = [];
+  const handler = createJsonEventStreamHandler('opencode', (event) => events.push(event));
+
+  handler.feed(
+    JSON.stringify({
+      type: 'text',
+      part: {
+        text: 'todowrite {"todos":[{"content":"Test","status":"completed"}]}',
+      },
+    }) + '\n',
+  );
+
+  assert.equal(events.length, 1);
+  assert.equal(events[0].type, 'tool_use');
+  assert.equal(events[0].name, 'TodoWrite');
+  assert.deepEqual(events[0].input, { todos: [{ content: 'Test', status: 'completed' }] });
+});
+
 test('unknown json stream lines become raw events', () => {
   const events = [];
   const handler = createJsonEventStreamHandler('opencode', (event) => events.push(event));
