@@ -5691,26 +5691,26 @@ button.connector-action.is-loading {
   left: 0;
   top: 0;
   transform: translateY(calc(-100% - 6px));
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  max-width: min(380px, 80vw);
-  padding: 4px 7px;
+  display: inline-block;
+  width: 280px;
+  padding: 6px 8px;
   border-radius: 4px;
   background: rgba(17, 24, 39, 0.95);
   color: white;
   font-size: 11px;
-  line-height: 1.2;
-  white-space: nowrap;
+  line-height: 1.4;
   box-shadow: var(--shadow-sm);
 }
 .comment-target-tooltip strong {
   color: #8ec5ff;
   font-weight: 700;
+  display: block;
+  word-break: break-all;
 }
 .comment-target-tooltip span {
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: block;
+  margin-top: 2px;
+  opacity: 0.8;
 }
 .comment-saved-marker {
   position: absolute;
